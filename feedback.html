@@ -281,26 +281,36 @@
             document.getElementById('rating-display').textContent = `Selected Rating: ${selectedRating} star${selectedRating > 1 ? 's' : ''}`;
         });
     });
-    async function redirectAfterSubmission(event) {
-        event.preventDefault();
-        const form = event.target;
+async function redirectAfterSubmission(event) {
+    event.preventDefault();
+    const form = event.target;
+    const submitButton = form.querySelector('input[type="submit"]');
 
-        try {
-            const response = await fetch(form.action, {
-                method: form.method,
-                body: new FormData(form),
-            });
+    // Disable the button to prevent multiple clicks
+    submitButton.disabled = true;
+    submitButton.value = "Submitting..."; // Provide visual feedback
 
-            if (response.ok) {
-                window.location.href = "feedbackform.html";
-            } else {
-                alert("There was an issue submitting your form. Please try again.");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-            alert("An error occurred. Please try again.");
+    try {
+        const response = await fetch(form.action, {
+            method: form.method,
+            body: new FormData(form),
+        });
+
+        if (response.ok) {
+            window.location.href = "feedbackform.html"; // Redirect on success
+        } else {
+            alert("There was an issue submitting your form. Please try again.");
         }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("An error occurred. Please try again.");
+    } finally {
+        // Re-enable the button only if submission fails
+        submitButton.disabled = false;
+        submitButton.value = "Submit Feedback";
     }
+}
+
 </script>
 
 </body>
